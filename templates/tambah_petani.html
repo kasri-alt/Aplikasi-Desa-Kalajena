@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Tambah Petani - Sistem Pencatatan Panen Bawang Merah{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        max-width: 500px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3">
+            <i class="fas fa-user-plus"></i> Tambah Petani Baru
+        </h1>
+        <p class="text-muted">Daftarkan petani baru ke dalam sistem</p>
+    </div>
+</div>
+
+<div class="form-container">
+    <form method="POST">
+        <!-- NIK -->
+        <div class="mb-3">
+            <label for="nik" class="form-label">
+                <i class="fas fa-id-card"></i> NIK (Nomor Induk Kependudukan) <span class="text-danger">*</span>
+            </label>
+            <input 
+                type="text" 
+                class="form-control" 
+                id="nik" 
+                name="nik"
+                placeholder="Masukkan 16 digit NIK"
+                maxlength="16"
+                pattern="^\d{16}$"
+                required
+            >
+            <small class="form-text text-muted">Contoh: 3273021234567890</small>
+        </div>
+        
+        <!-- Nama Petani -->
+        <div class="mb-3">
+            <label for="nama" class="form-label">
+                <i class="fas fa-user"></i> Nama Lengkap <span class="text-danger">*</span>
+            </label>
+            <input 
+                type="text" 
+                class="form-control" 
+                id="nama" 
+                name="nama"
+                placeholder="Masukkan nama lengkap petani"
+                required
+            >
+            <small class="form-text text-muted">Minimal 3 karakter</small>
+        </div>
+        
+        <!-- Alamat -->
+        <div class="mb-3">
+            <label for="alamat" class="form-label">
+                <i class="fas fa-map-marker-alt"></i> Alamat <span class="text-danger">*</span>
+            </label>
+            <textarea 
+                class="form-control" 
+                id="alamat" 
+                name="alamat"
+                rows="3"
+                placeholder="Masukkan alamat lengkap petani"
+                required
+            ></textarea>
+            <small class="form-text text-muted">Contoh: Jl. Raya Desa Kalajena, RT 03/RW 02</small>
+        </div>
+        
+        <!-- Nomor HP -->
+        <div class="mb-3">
+            <label for="nomor_hp" class="form-label">
+                <i class="fas fa-mobile-alt"></i> Nomor HP/Telepon
+            </label>
+            <input 
+                type="tel" 
+                class="form-control" 
+                id="nomor_hp" 
+                name="nomor_hp"
+                placeholder="Masukkan nomor HP (opsional)"
+            >
+            <small class="form-text text-muted">Contoh: 081234567890</small>
+        </div>
+        
+        <!-- Tombol Submit -->
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-save"></i> Simpan Petani
+            </button>
+            <a href="/data-petani" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Kembali ke Daftar Petani
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

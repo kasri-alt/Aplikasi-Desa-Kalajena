@@ -1,0 +1,74 @@
+{
+  "kontak_penting": [
+    {
+      "id": 1,
+      "nama": "BUDIMAN H.SYAFRUDIN"      "jabatan": "Kepala Desa",
+      "nip": "20192501.117.07.13.1",
+      "nomor_wa": "6282112345678",
+      "foto": "https://via.placeholder.com/300x300?text=Kepala+Desa",
+      "deskripsi": "Pimpinan tertinggi Desa Kalajena",
+      "jam_kerja": "Senin-Jumat 08:00-15:00"
+    },
+    {
+      "id": 2,
+      "nama": "ISKANDAR H.M.SAID",
+      "jabatan": "Sekretaris Desa",
+      "nip": "198003121999032003",
+      "nomor_wa": "6282187654321",
+      "foto": "https://via.placeholder.com/300x300?text=Sekretaris+Desa",
+      "deskripsi": "Menangani administrasi dan kelengkapan surat",
+      "jam_kerja": "Senin-Jumat 08:00-15:00"
+    },
+    {
+      "id": 3,
+      "nama": "Sertu Sahrul",
+      "jabatan": "Babinsa (Bintara Pembina Desa)",
+      "nip": "198505201990021005",
+      "nomor_wa": "6281234567899",
+      "foto": "https://via.placeholder.com/300x300?text=Babinsa",
+      "deskripsi": "Binaan militer dan ketertiban desa",
+      "jam_kerja": "Setiap hari 08:00-17:00"
+    },
+    {
+      "id": 4,
+      "nama": "Bripka Adi Setiawan",
+      "jabatan": "Babinkamtibmas (Bhabinkamtibmas)",
+      "nip": "198102151988021003",
+      "nomor_wa": "6281999888777",
+      "email": "babinkamtibmas@desikalajena.local",
+      "foto": "https://via.placeholder.com/300x300?text=Babinkamtibmas",
+      "deskripsi": "Keamanan, ketertiban, dan kemasyarakatan",
+      "jam_kerja": "Setiap hari 08:00-17:00"
+    },
+    {
+      "id": 5,
+      "nama": "Gunawan, S.H.",
+      "jabatan": "Kepala Urusan Keuangan",
+      "nip": "196903151997031001",
+      "nomor_wa": "6282156789012",
+      "email": "kaur.keuangan@desikalajena.local",
+      "foto": "https://via.placeholder.com/300x300?text=Kaur+Keuangan",
+      "deskripsi": "Menangani urusan keuangan desa",
+      "jam_kerja": "Senin-Jumat 08:00-15:00"
+    },
+    {
+      "id": 6,
+      "nama": "Imran Mansyur"
+      "jabatan": "Kepala Urusan Umum dan Aset",
+      "nip": "197001201998022002",
+      "nomor_wa": "6282245678901",
+      "foto": "https://via.placeholder.com/300x300?text=Kaur+Umum+dan+Aset",
+      "deskripsi": "Mengurus urusan umum dan aset desa",
+      "jam_kerja": "Senin-Jumat 08:00-15:00"
+    }
+    {
+      "id": 7,
+      "nama": "Kasri lilmuttaqin, S.H"
+      "jabatan": "Kepala Urusan Perencanaan dan Pelaporan",
+      "nip": "197001201998022002",
+      "nomor_wa": "6282245678901",
+      "foto": "https://via.placeholder.com/300x300?text=Kaur+Perencanaan+dan+Pelaporan",
+      "deskripsi": "Mengurus urusan Perencanaan dan Pelaporan desa",
+      "jam_kerja": "Senin-Jumat 08:00-15:00"
+  ]
+}

@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+
+{% block title %}Input Data Panen - Sistem Pencatatan Panen Bawang Merah{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .info-petani {
+        background: #e7f3ff;
+        border-left: 4px solid #2196F3;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        display: none;
+    }
+    
+    .info-petani.show {
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3">
+            <i class="fas fa-plus-circle"></i> Input Data Hasil Panen
+        </h1>
+        <p class="text-muted">Masukkan data hasil panen bawang merah Anda</p>
+    </div>
+</div>
+
+<div class="form-container">
+    <form id="formInputPanen" method="POST">
+        <!-- Input NIK Petani -->
+        <div class="mb-3">
+            <label for="nikPetani" class="form-label">
+                <i class="fas fa-id-card"></i> NIK Petani <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    id="nikPetani" 
+                    name="nik_petani" 
+                    placeholder="Masukkan NIK 16 digit"
+                    maxlength="16"
+                    required
+                >
+                <button class="btn btn-outline-secondary" type="button" id="btnCekNik">
+                    <i class="fas fa-search"></i> Cek
+                </button>
+            </div>
+            <small class="form-text text-muted">Masukkan NIK 16 digit untuk verifikasi data petani</small>
+        </div>
+        
+        <!-- Info Petani (ditampilkan setelah NIK dicek) -->
+        <div id="infoPetani" class="info-petani">
+            <div class="row">
+                <div class="col-6">
+                    <p class="mb-1">
+                        <strong>Nama:</strong><br>
+                        <span id="namaPetani"></span>
+                    </p>
+                </div>
+                <div class="col-6">
+                    <p class="mb-1">
+                        <strong>Alamat:</strong><br>
+                        <span id="alamatPetani" style="font-size: 0.9em;"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tanggal Panen -->
+        <div class="mb-3">
+            <label for="tanggalPanen" class="form-label">
+                <i class="fas fa-calendar"></i> Tanggal Panen <span class="text-danger">*</span>
+            </label>
+            <input 
+                type="date" 
+                class="form-control" 
+                id="tanggalPanen" 
+                name="tanggal_panen"
+                required
+            >
+            <small class="form-text text-muted">Pilih tanggal saat panen dilakukan</small>
+        </div>
+        
+        <!-- Luas Lahan -->
+        <div class="mb-3">
+            <label for="luasLahan" class="form-label">
+                <i class="fas fa-square"></i> Luas Lahan <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+                <input 
+                    type="number" 
+                    class="form-control" 
+                    id="luasLahan" 
+                    name="luas_lahan"
+                    placeholder="Masukkan angka"
+                    step="0.01"
+                    min="0"
+                    required
+                >
+                <span class="input-group-text">m²</span>
+            </div>
+            <small class="form-text text-muted">Contoh: 500 (untuk 500 meter persegi)</small>
+        </div>
+        
+        <!-- Tonase (Hasil Panen) -->
+        <div class="mb-3">
+            <label for="tonase" class="form-label">
+                <i class="fas fa-weight"></i> Hasil Panen (Tonase) <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+                <input 
+                    type="number" 
+                    class="form-control" 
+                    id="tonase" 
+                    name="tonase"
+                    placeholder="Masukkan angka"
+                    step="0.01"
+                    min="0"
+                    required
+                >
+                <span class="input-group-text">Kg</span>
+            </div>
+            <small class="form-text text-muted">Contoh: 250 (untuk 250 kilogram)</small>
+        </div>
+        
+        <!-- Status Pengairan -->
+        <div class="mb-3">
+            <label for="statusPengairan" class="form-label">
+                <i class="fas fa-water"></i> Status Pengairan <span class="text-danger">*</span>
+            </label>
+            <select 
+                class="form-select" 
+                id="statusPengairan" 
+                name="status_pengairan"
+                required
+            >
+                <option value="">-- Pilih Status --</option>
+                <option value="normal">Normal - Air cukup</option>
+                <option value="kurang">Kurang - Kekurangan air</option>
+            </select>
+            <small class="form-text text-muted">Kondisi pengairan saat panen</small>
+        </div>
+        
+        <!-- Catatan Tambahan -->
+        <div class="mb-3">
+            <label for="catatan" class="form-label">
+                <i class="fas fa-sticky-note"></i> Catatan Tambahan
+            </label>
+            <textarea 
+                class="form-control" 
+                id="catatan" 
+                name="catatan"
+                rows="4"
+                placeholder="Tulis catatan atau keterangan tambahan (opsional)"
+            ></textarea>
+            <small class="form-text text-muted">Contoh: Kondisi cuaca, hama, atau informasi penting lainnya</small>
+        </div>
+        
+        <!-- Tombol Submit -->
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary btn-lg" id="btnSubmit">
+                <i class="fas fa-save"></i> Simpan Data Panen
+            </button>
+            <a href="/" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- Modal untuk pesan sukses -->
+<div class="modal fade" id="modalSukses" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-check-circle"></i> Berhasil
+                </h5>
+            </div>
+            <div class="modal-body">
+                <p id="pesan-sukses"></p>
+                <p class="text-muted">ID Data Panen: <strong id="id-data-panen"></strong></p>
+            </div>
+            <div class="modal-footer">
+                <a href="/" class="btn btn-primary">
+                    <i class="fas fa-home"></i> Kembali ke Dashboard
+                </a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetForm()">
+                    <i class="fas fa-plus"></i> Tambah Data Lagi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal untuk pesan error -->
+<div class="modal fade" id="modalError" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-circle"></i> Terjadi Kesalahan
+                </h5>
+            </div>
+            <div class="modal-body">
+                <p id="pesan-error"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Set tanggal hari ini sebagai default
+    document.getElementById('tanggalPanen').valueAsDate = new Date();
+    
+    // Tombol Cek NIK
+    document.getElementById('btnCekNik').addEventListener('click', function() {
+        const nik = document.getElementById('nikPetani').value.trim();
+        
+        // Validasi NIK format
+        if (!nik || nik.length !== 16 || !nik.match(/^\d+$/)) {
+            showError('NIK harus 16 digit angka');
+            return;
+        }
+        
+        // Fetch data petani dari API
+        fetch(`/api/cek-petani/${nik}`)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Petani tidak ditemukan');
+                }
+            })
+            .then(data => {
+                if (data.ditemukan) {
+                    // Tampilkan info petani
+                    document.getElementById('namaPetani').textContent = data.nama;
+                    document.getElementById('alamatPetani').textContent = data.alamat;
+                    document.getElementById('infoPetani').classList.add('show');
+                } else {
+                    showError(data.pesan);
+                }
+            })
+            .catch(error => {
+                showError('NIK tidak terdaftar. Silakan daftar petani terlebih dahulu.');
+            });
+    });
+    
+    // Form submit
+    document.getElementById('formInputPanen').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const btnSubmit = document.getElementById('btnSubmit');
+        
+        // Disable button saat proses
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+        
+        fetch('/input-panen', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.sukses) {
+                document.getElementById('pesan-sukses').textContent = data.pesan;
+                document.getElementById('id-data-panen').textContent = data.id_data;
+                
+                const modalSukses = new bootstrap.Modal(document.getElementById('modalSukses'));
+                modalSukses.show();
+            } else {
+                showError(data.pesan);
+            }
+        })
+        .catch(error => {
+            showError('Terjadi kesalahan saat menyimpan data');
+        })
+        .finally(() => {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = '<i class="fas fa-save"></i> Simpan Data Panen';
+        });
+    });
+    
+    // Fungsi untuk menampilkan error
+    function showError(pesan) {
+        document.getElementById('pesan-error').textContent = pesan;
+        const modalError = new bootstrap.Modal(document.getElementById('modalError'));
+        modalError.show();
+    }
+    
+    // Fungsi untuk reset form
+    function resetForm() {
+        document.getElementById('formInputPanen').reset();
+        document.getElementById('infoPetani').classList.remove('show');
+        document.getElementById('tanggalPanen').valueAsDate = new Date();
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Laporan Panen - Sistem Pencatatan Panen Bawang Merah{% endblock %}
+
+{% block extra_css %}
+<style>
+    .laporan-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .laporan-table {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .table-summary {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .summary-item {
+        text-align: center;
+        padding: 15px;
+    }
+    
+    .summary-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #667eea;
+    }
+    
+    .summary-label {
+        color: #999;
+        font-size: 0.9em;
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3">
+            <i class="fas fa-file-alt"></i> Laporan Data Panen
+        </h1>
+        <p class="text-muted">Detail lengkap data hasil panen bawang merah</p>
+    </div>
+</div>
+
+<!-- Filter Bulan dan Tahun -->
+<div class="row mb-4">
+    <div class="col-12">
+        <form method="GET" class="row g-3">
+            <div class="col-md-3">
+                <label for="bulan" class="form-label">Bulan</label>
+                <select class="form-select" id="bulan" name="bulan">
+                    {% for i in range(1, 13) %}
+                    <option value="{{ i }}" {% if i == bulan %}selected{% endif %}>
+                        {{ bulan_names[i] }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="tahun" class="form-label">Tahun</label>
+                <select class="form-select" id="tahun" name="tahun">
+                    {% for t in range(2020, 2026) %}
+                    <option value="{{ t }}" {% if t == tahun %}selected{% endif %}>{{ t }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label>&nbsp;</label>
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search"></i> Tampilkan Laporan
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Header Laporan -->
+<div class="laporan-header">
+    <h4 class="mb-1">Laporan Panen Bulan {{ bulan_names[bulan] }} {{ tahun }}</h4>
+    <p class="mb-0">
+        <small>Desa Kalajena - Data Hasil Panen Bawang Merah</small>
+    </p>
+</div>
+
+<!-- Ringkasan Data -->
+<div class="table-summary">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="summary-item">
+                <div class="summary-value">{{ total_data }}</div>
+                <div class="summary-label">Jumlah Catatan</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="summary-item">
+                <div class="summary-value">{{ total_luas }}</div>
+                <div class="summary-label">Total Luas Lahan (m²)</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="summary-item">
+                <div class="summary-value">{{ total_tonase }}</div>
+                <div class="summary-label">Total Panen (Kg)</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="summary-item">
+                <div class="summary-value">
+                    {% if total_luas > 0 %}
+                        {{ (total_tonase / (total_luas / 10000)) | round(2) }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </div>
+                <div class="summary-label">Produktivitas (Ton/Ha)</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabel Data Panen -->
+<div class="laporan-table table-responsive">
+    {% if data_panen %}
+    <table class="table table-hover mb-0">
+        <thead class="table-light">
+            <tr>
+                <th style="width: 50px;">No</th>
+                <th>Petani</th>
+                <th>Tanggal Panen</th>
+                <th>Luas Lahan (m²)</th>
+                <th>Hasil Panen (Kg)</th>
+                <th>Status Pengairan</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in data_panen %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>
+                    <strong>{{ data.petani.nama }}</strong><br>
+                    <small class="text-muted">NIK: {{ data.petani.nik }}</small>
+                </td>
+                <td>{{ data.tanggal_panen.strftime('%d %b %Y') }}</td>
+                <td>{{ data.luas_lahan }}</td>
+                <td>{{ data.tonase }}</td>
+                <td>
+                    {% if data.status_pengairan == 'normal' %}
+                        <span class="badge bg-success">
+                            <i class="fas fa-water"></i> Normal
+                        </span>
+                    {% else %}
+                        <span class="badge bg-warning">
+                            <i class="fas fa-exclamation-triangle"></i> Kurang
+                        </span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="/detail-panen/{{ data.id }}" class="btn btn-sm btn-info" title="Lihat Detail">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <a href="/edit-panen/{{ data.id }}" class="btn btn-sm btn-warning" title="Edit Data">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="p-4 text-center">
+        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+        <p class="text-muted">Tidak ada data panen pada bulan {{ bulan_names[bulan] }} {{ tahun }}</p>
+        <a href="/input-panen" class="btn btn-primary mt-2">
+            <i class="fas fa-plus"></i> Tambahkan Data Panen
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Tombol Aksi -->
+<div class="row mt-4">
+    <div class="col-12">
+        <a href="/" class="btn btn-secondary">
+            <i class="fas fa-home"></i> Kembali ke Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

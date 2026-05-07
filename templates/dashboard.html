@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Sistem Pencatatan Panen Bawang Merah{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-card.card-luas {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    
+    .stat-card.card-tonase {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .stat-card.card-produktivitas {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+    
+    .stat-value {
+        font-size: 32px;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+    
+    .stat-label {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+    
+    .chart-container {
+        position: relative;
+        height: 300px;
+        margin-bottom: 30px;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3 mb-1">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </h1>
+        <p class="text-muted">Statistik Panen Bawang Merah Bulan {{ bulan_names[bulan_ini] }} {{ tahun_ini }}</p>
+    </div>
+</div>
+
+<!-- Statistik Cards -->
+<div class="row">
+    <div class="col-md-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-label">
+                <i class="fas fa-user-tie"></i> Petani Aktif
+            </div>
+            <div class="stat-value">{{ total_petani_aktif }}</div>
+            <small>Petani yang melaporkan panen</small>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3">
+        <div class="stat-card card-luas">
+            <div class="stat-label">
+                <i class="fas fa-square"></i> Total Luas Lahan
+            </div>
+            <div class="stat-value">{{ total_luas_lahan }}</div>
+            <small>m² ({{ (total_luas_lahan / 10000) | round(2) }} ha)</small>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3">
+        <div class="stat-card card-tonase">
+            <div class="stat-label">
+                <i class="fas fa-weight"></i> Total Panen
+            </div>
+            <div class="stat-value">{{ total_tonase }}</div>
+            <small>Kilogram</small>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3">
+        <div class="stat-card card-produktivitas">
+            <div class="stat-label">
+                <i class="fas fa-chart-bar"></i> Produktivitas
+            </div>
+            <div class="stat-value">{{ produktivitas }}</div>
+            <small>Ton/Hektar</small>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row mt-4">
+    <div class="col-lg-8">
+        <div class="chart-container">
+            <h5 class="mb-3">
+                <i class="fas fa-chart-line"></i> Tren Panen Per Minggu
+            </h5>
+            <canvas id="chartTrenPanen"></canvas>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="chart-container">
+            <h5 class="mb-3">
+                <i class="fas fa-water"></i> Status Pengairan
+            </h5>
+            <canvas id="chartPengairan"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-bolt"></i> Aksi Cepat
+                </h5>
+            </div>
+            <div class="card-body">
+                <a href="/input-panen" class="btn btn-success me-2">
+                    <i class="fas fa-plus-circle"></i> Tambah Data Panen
+                </a>
+                <a href="/data-petani" class="btn btn-info me-2">
+                    <i class="fas fa-users"></i> Kelola Petani
+                </a>
+                <a href="/laporan-panen" class="btn btn-warning">
+                    <i class="fas fa-file-alt"></i> Lihat Laporan
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Data dari server
+    const grafikData = {{ grafik_data | tojson }};
+    const statusPengairanStats = {{ status_pengairan_stats | tojson }};
+    
+    // Chart 1: Tren Panen Per Minggu
+    const ctxTren = document.getElementById('chartTrenPanen').getContext('2d');
+    new Chart(ctxTren, {
+        type: 'line',
+        data: {
+            labels: grafikData.map(item => item.minggu),
+            datasets: [{
+                label: 'Tonase (kg)',
+                data: grafikData.map(item => item.tonase),
+                borderColor: '#4facfe',
+                backgroundColor: 'rgba(79, 172, 254, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 5,
+                pointBackgroundColor: '#4facfe',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Tonase (kg)'
+                    }
+                }
+            }
+        }
+    });
+    
+    // Chart 2: Status Pengairan (Pie Chart)
+    const ctxPengairan = document.getElementById('chartPengairan').getContext('2d');
+    const colors = ['#43e97b', '#fa709a'];
+    new Chart(ctxPengairan, {
+        type: 'doughnut',
+        data: {
+            labels: statusPengairanStats.map(item => item.status),
+            datasets: [{
+                data: statusPengairanStats.map(item => item.jumlah),
+                backgroundColor: colors.slice(0, statusPengairanStats.length),
+                borderColor: '#fff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

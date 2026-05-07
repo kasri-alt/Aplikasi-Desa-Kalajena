@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Petani - Sistem Pencatatan Panen Bawang Merah{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        max-width: 500px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .info-box {
+        background: #f0f7ff;
+        border-left: 4px solid #2196F3;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3">
+            <i class="fas fa-edit"></i> Edit Data Petani
+        </h1>
+        <p class="text-muted">Ubah informasi petani <strong>{{ petani.nama }}</strong></p>
+    </div>
+</div>
+
+<div class="form-container">
+    <!-- Info Box -->
+    <div class="info-box">
+        <i class="fas fa-info-circle"></i> 
+        <strong>NIK tidak dapat diubah.</strong> Jika terjadi kesalahan NIK, silakan hubungi administrator.
+    </div>
+    
+    <form method="POST">
+        <!-- NIK (Read-only) -->
+        <div class="mb-3">
+            <label for="nik" class="form-label">
+                <i class="fas fa-id-card"></i> NIK (Nomor Induk Kependudukan)
+            </label>
+            <input 
+                type="text" 
+                class="form-control" 
+                id="nik"
+                value="{{ petani.nik }}"
+                disabled
+            >
+            <small class="form-text text-muted">Tidak dapat diubah</small>
+        </div>
+        
+        <!-- Nama Petani -->
+        <div class="mb-3">
+            <label for="nama" class="form-label">
+                <i class="fas fa-user"></i> Nama Lengkap <span class="text-danger">*</span>
+            </label>
+            <input 
+                type="text" 
+                class="form-control" 
+                id="nama" 
+                name="nama"
+                value="{{ petani.nama }}"
+                placeholder="Masukkan nama lengkap petani"
+                required
+            >
+        </div>
+        
+        <!-- Alamat -->
+        <div class="mb-3">
+            <label for="alamat" class="form-label">
+                <i class="fas fa-map-marker-alt"></i> Alamat <span class="text-danger">*</span>
+            </label>
+            <textarea 
+                class="form-control" 
+                id="alamat" 
+                name="alamat"
+                rows="3"
+                placeholder="Masukkan alamat lengkap petani"
+                required
+            >{{ petani.alamat }}</textarea>
+        </div>
+        
+        <!-- Nomor HP -->
+        <div class="mb-3">
+            <label for="nomor_hp" class="form-label">
+                <i class="fas fa-mobile-alt"></i> Nomor HP/Telepon
+            </label>
+            <input 
+                type="tel" 
+                class="form-control" 
+                id="nomor_hp" 
+                name="nomor_hp"
+                value="{{ petani.nomor_hp or '' }}"
+                placeholder="Masukkan nomor HP (opsional)"
+            >
+        </div>
+        
+        <!-- Informasi Terdaftar -->
+        <div class="mb-3">
+            <small class="text-muted">
+                <i class="fas fa-calendar"></i> Terdaftar: {{ petani.tanggal_daftar.strftime('%d %B %Y') }}<br>
+                <i class="fas fa-database"></i> Jumlah Data Panen: <strong>{{ petani.data_panen | length }}</strong> catatan
+            </small>
+        </div>
+        
+        <!-- Tombol Submit -->
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-warning btn-lg">
+                <i class="fas fa-save"></i> Simpan Perubahan
+            </button>
+            <a href="/data-petani" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Kembali ke Daftar Petani
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Data Panen - Sistem Pencatatan Panen Bawang Merah{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .info-box {
+        background: #f0f7ff;
+        border-left: 4px solid #2196F3;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <a href="/detail-panen/{{ data_panen.id }}" class="btn btn-sm btn-secondary mb-3">
+            <i class="fas fa-arrow-left"></i> Kembali
+        </a>
+        <h1 class="h3">
+            <i class="fas fa-edit"></i> Edit Data Panen
+        </h1>
+        <p class="text-muted">Petani: <strong>{{ data_panen.petani.nama }}</strong></p>
+    </div>
+</div>
+
+<div class="form-container">
+    <!-- Info Box -->
+    <div class="info-box">
+        <i class="fas fa-info-circle"></i> 
+        Data petani tidak dapat diubah melalui form ini. Untuk mengubah data petani, silakan kunjungi halaman manajemen petani.
+    </div>
+    
+    <form method="POST">
+        <!-- Info Petani (Read-only) -->
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Nama Petani</label>
+                <input type="text" class="form-control" value="{{ data_panen.petani.nama }}" disabled>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">NIK Petani</label>
+                <input type="text" class="form-control" value="{{ data_panen.petani.nik }}" disabled>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <!-- Tanggal Panen -->
+        <div class="mb-3">
+            <label for="tanggalPanen" class="form-label">
+                <i class="fas fa-calendar"></i> Tanggal Panen <span class="text-danger">*</span>
+            </label>
+            <input 
+                type="date" 
+                class="form-control" 
+                id="tanggalPanen" 
+                name="tanggal_panen"
+                value="{{ data_panen.tanggal_panen.strftime('%Y-%m-%d') }}"
+                required
+            >
+        </div>
+        
+        <!-- Luas Lahan -->
+        <div class="mb-3">
+            <label for="luasLahan" class="form-label">
+                <i class="fas fa-square"></i> Luas Lahan <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+                <input 
+                    type="number" 
+                    class="form-control" 
+                    id="luasLahan" 
+                    name="luas_lahan"
+                    value="{{ data_panen.luas_lahan }}"
+                    step="0.01"
+                    min="0"
+                    required
+                >
+                <span class="input-group-text">m²</span>
+            </div>
+        </div>
+        
+        <!-- Tonase -->
+        <div class="mb-3">
+            <label for="tonase" class="form-label">
+                <i class="fas fa-weight"></i> Hasil Panen (Tonase) <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+                <input 
+                    type="number" 
+                    class="form-control" 
+                    id="tonase" 
+                    name="tonase"
+                    value="{{ data_panen.tonase }}"
+                    step="0.01"
+                    min="0"
+                    required
+                >
+                <span class="input-group-text">Kg</span>
+            </div>
+        </div>
+        
+        <!-- Status Pengairan -->
+        <div class="mb-3">
+            <label for="statusPengairan" class="form-label">
+                <i class="fas fa-water"></i> Status Pengairan <span class="text-danger">*</span>
+            </label>
+            <select 
+                class="form-select" 
+                id="statusPengairan" 
+                name="status_pengairan"
+                required
+            >
+                <option value="normal" {% if data_panen.status_pengairan == 'normal' %}selected{% endif %}>
+                    Normal - Air cukup
+                </option>
+                <option value="kurang" {% if data_panen.status_pengairan == 'kurang' %}selected{% endif %}>
+                    Kurang - Kekurangan air
+                </option>
+            </select>
+        </div>
+        
+        <!-- Catatan -->
+        <div class="mb-3">
+            <label for="catatan" class="form-label">
+                <i class="fas fa-sticky-note"></i> Catatan Tambahan
+            </label>
+            <textarea 
+                class="form-control" 
+                id="catatan" 
+                name="catatan"
+                rows="4"
+            >{{ data_panen.catatan or '' }}</textarea>
+        </div>
+        
+        <!-- Tombol Submit -->
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-warning btn-lg">
+                <i class="fas fa-save"></i> Simpan Perubahan
+            </button>
+            <a href="/detail-panen/{{ data_panen.id }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Batal
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
