@@ -10,9 +10,13 @@ import os
 from sqlalchemy import func, extract
 
 # Inisialisasi aplikasi Flask
+basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///panen_bawang.db'
-app.config['SECRET_KEY'] = 'desa-kalajena-secret-key'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+    'DATABASE_URL',
+    f"sqlite:///{os.path.join(basedir, 'panen_bawang.db')}"
+)
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'desa-kalajena-secret-key')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Inisialisasi database
